@@ -50,20 +50,29 @@ var mta = new Mta({
 //This SHOULD given a single subway stop id (or an array of stop ids) and an optional feedId,
 // give schedule data for both northbound and southbound trains. But it doesn't seem to be working correctly, will tinker with it more.
 
+
+//Function to get minutes from epoch time
 var minutes = (epoch) => {
   var myDate = new Date( epoch * 1000);
   var mins = myDate.getMinutes();
   return mins;
 }
+
+//Function to get date from epoch time
 var time = epochTime => myDate = new Date( epochTime * 1000)
 
+//This Targets one stop, with an ID of 638, if you check the route ID json file you'll see it's the spring street stop for the six, the result is schedule, which has two arrays, North and southbound
 
 mta.schedule(638, 1).then(function (result) {
+  //This is logging the arrivaltime of the second indexed arrival time for the southbound direction
   console.log(result.schedule[638].S[1].arrivalTime);
-  console.log(new Date( result.schedule[638].S[1].arrivalTime * 1000))
+  //this is me setting a variable equal to the arrival time converted to a normal date with my above functions
   var bob = time(result.schedule[638].S[1].arrivalTime)
+  //Console logging it!
   console.log(bob)
 
+
+  //The data is outputted weirdly, but you can still access it with dot notation and array indexing, it seems to be a clutter of objects and nested arrays, which is annoying to sort through but not too bad.
 });
 
 
