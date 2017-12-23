@@ -8,7 +8,7 @@ var requestSettings = {
 };
 var Mta = require('mta-gtfs');
 const fetch = require('node-fetch');
-var apiKeys = require('./config')
+//var apiKeys = require('./config')
 /*
 NOTE: This is just trying to add all the dependencies with require.js so it works on a web server, will most likely just try to add them to package.json
 require(['gtfs-realtime-bindings'], function(gtfsrealtimebindings){
@@ -36,33 +36,35 @@ var mta = new Mta({
 });
 
 //All subway service updates
-mta.status('subway').then(function (result) {
-  console.log(result);
-});
+// mta.status('subway').then(function (result) {
+//   console.log(result);
+// });
 
 //Getting the ids, name, and lat/long for all subway stops, might be able to use geo JSON to convert long/lat
-mta.stop().then(function (result) {
-  console.log(result);
-}).catch(function (err) {
-  console.log(err);
-});
+// mta.stop().then(function (result) {
+//   console.log(result);
+// }).catch(function (err) {
+//   console.log(err);
+// });
 
 //This SHOULD given a single subway stop id (or an array of stop ids) and an optional feedId,
 // give schedule data for both northbound and southbound trains. But it doesn't seem to be working correctly, will tinker with it more.
 
-mta.schedule(635, 1).then(function (result) {
-  console.log(result);
+var minutes = (epoch) => {
+  var myDate = new Date( epoch * 1000);
+  var mins = myDate.getMinutes();
+  return mins;
+}
+var time = epochTime => myDate = new Date( epochTime * 1000)
+
+
+mta.schedule(638, 1).then(function (result) {
+  console.log(result.schedule[638].S[1].arrivalTime);
+  console.log(new Date( result.schedule[638].S[1].arrivalTime * 1000))
+  var bob = time(result.schedule[638].S[1].arrivalTime)
+  console.log(bob)
+
 });
 
 
-//Ajax seems to now work, gonna try something else
-
-
-
-
-
-
-
-
-
-z
+//Ajax seems to not work, gonna try something else
