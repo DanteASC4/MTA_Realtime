@@ -14437,7 +14437,7 @@ module.exports = {
                     }
             } else {
                 var xhr = Util.XHR();
-                xhr.open('GET', path, callback );
+                xhr.open('GET', path);
                 // xhr.setRequestHeader('User-Agent', 'XMLHTTP/1.0');
                 xhr.setRequestHeader('Accept', 'text/plain');
                 if (typeof xhr.overrideMimeType === 'function') xhr.overrideMimeType('text/plain');
