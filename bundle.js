@@ -1239,12 +1239,12 @@ mta.schedule(638, 1).then(function(result) {
                 var advance = typeof offset === 'undefined';
                 offset = typeof offset !== 'undefined' ? offset : this.offset;
                 if (!(typeof value === 'object' && value instanceof Long)) value = Long.fromNumber(value, false);
-    
+
                 var part0 = value.toInt() >>> 0,
                     part1 = value.shiftRightUnsigned(28).toInt() >>> 0,
                     part2 = value.shiftRightUnsigned(56).toInt() >>> 0,
                     size = ByteBuffer.calculateVarint64(value);
-    
+
                 this.ensureCapacity(offset+size);
                 var dst = this.view;
                 switch (size) {
@@ -1267,7 +1267,7 @@ mta.schedule(638, 1).then(function(result) {
                     return size;
                 }
             };
-    
+
             /**
              * Reads a 32bit base 128 variable-length integer as used in protobuf. Requires Long.js.
              * @param {number=} offset Offset to read from. Will use and advance {@link ByteBuffer#offset} if omitted.
@@ -1281,7 +1281,7 @@ mta.schedule(638, 1).then(function(result) {
                 offset = typeof offset !== 'undefined' ? offset : this.offset;
                 var start = offset;
                 // ref: src/google/protobuf/io/coded_stream.cc
-    
+
                 var src = this.view,
                     part0, part1 = 0, part2 = 0, b;
                 b = src.getUint8(offset++); part0  = (b & 0x7F)      ; if (b & 0x80) {
@@ -1295,7 +1295,7 @@ mta.schedule(638, 1).then(function(result) {
                 b = src.getUint8(offset++); part2  = (b & 0x7F)      ; if (b & 0x80) {
                 b = src.getUint8(offset++); part2 |= (b & 0x7F) <<  7; if (b & 0x80) {
                 throw(new Error("Data must be corrupt: Buffer overrun")); }}}}}}}}}}
-                
+
                 var value = Long.from28Bits(part0, part1, part2, false);
                 if (advance) {
                     this.offset = offset;
@@ -1307,7 +1307,7 @@ mta.schedule(638, 1).then(function(result) {
                     };
                 }
             };
-    
+
             /**
              * Writes a zigzag encoded 64bit base 128 encoded variable-length integer as used in protobuf.
              * @param {number} value Value to write
@@ -1318,7 +1318,7 @@ mta.schedule(638, 1).then(function(result) {
             ByteBuffer.prototype.writeZigZagVarint64 = function(value, offset) {
                 return this.writeVarint64(ByteBuffer.zigZagEncode64(value), offset);
             };
-    
+
             /**
              * Reads a zigzag encoded 64bit base 128 variable-length integer as used in protobuf.
              * @param {number=} offset Offset to read from. Defaults to {@link ByteBuffer#offset} which will be modified only if omitted.
@@ -1334,7 +1334,7 @@ mta.schedule(638, 1).then(function(result) {
                 }
                 return ByteBuffer.zigZagDecode64(dec);
             };
-                
+
          }
 
         /**
@@ -1397,10 +1397,10 @@ mta.schedule(638, 1).then(function(result) {
                 return 5;
             }
         };
-        
+
         // Available with Long.js only
         if (Long) {
-    
+
             /**
              * Calculates the actual number of bytes required to encode a 64bit base 128 variable-length integer.
              * @param {number|!Long} value Value to encode
@@ -1410,11 +1410,11 @@ mta.schedule(638, 1).then(function(result) {
             ByteBuffer.calculateVarint64 = function(value) {
                 // ref: src/google/protobuf/io/coded_stream.cc
                 if (!(typeof value === 'object' && value instanceof Long)) value = Long.fromNumber(value, false);
-    
+
                 var part0 = value.toInt() >>> 0,
                     part1 = value.shiftRightUnsigned(28).toInt() >>> 0,
                     part2 = value.shiftRightUnsigned(56).toInt() >>> 0;
-    
+
                 if (part2 == 0) {
                     if (part1 == 0) {
                         if (part0 < TWO_PWR_14_DBL) {
@@ -1433,7 +1433,7 @@ mta.schedule(638, 1).then(function(result) {
                     return part2 < TWO_PWR_7_DBL ? 9 : 10;
                 }
             };
-            
+
         }
 
         /**
@@ -1457,10 +1457,10 @@ mta.schedule(638, 1).then(function(result) {
             // ref: src/google/protobuf/wire_format_lite.h
             return ((n >>> 1) ^ -(n & 1)) | 0;
         };
-        
+
         // Available with Long.js only
         if (Long) {
-    
+
             /**
              * Encodes a signed 64bit integer so that it can be effectively used with varint encoding.
              * @param {number|!Long} n Signed long
@@ -1476,7 +1476,7 @@ mta.schedule(638, 1).then(function(result) {
                 }
                 return n.shiftLeft(1).xor(n.shiftRight(63)).toUnsigned();
             };
-    
+
             /**
              * Decodes a zigzag encoded signed 64bit integer.
              * @param {!Long|number} n Unsigned zigzag encoded long or JavaScript number
@@ -1493,7 +1493,7 @@ mta.schedule(638, 1).then(function(result) {
                 }
                 return n.shiftRightUnsigned(1).xor(n.and(Long.ONE).toSigned().negate()).toSigned();
             };
-            
+
         }
 
         /**
@@ -1561,7 +1561,7 @@ mta.schedule(638, 1).then(function(result) {
          */
         ByteBuffer.encodeUTF8Char = function(charCode, dst, offset) {
             var start = offset;
-            // ref: http://en.wikipedia.org/wiki/UTF-8#Description
+            // ref://en.wikipedia.org/wiki/UTF-8#Description
             // It's quite huge but should be pretty fast.
             if (charCode < 0) {
                 throw(new Error("Cannot encode UTF8 character: charCode ("+charCode+") is negative"));
@@ -1987,7 +1987,7 @@ mta.schedule(638, 1).then(function(result) {
         };
 
         /**
-         * Reads a string with prepended number of characters, which is encoded as a 32bit base 128 variable-length 
+         * Reads a string with prepended number of characters, which is encoded as a 32bit base 128 variable-length
          *  integer.
          * @param {number=} offset Offset to read from. Will use and advance {@link ByteBuffer#offset} if omitted.
          * @returns {string|!{string: string, length: number}} The string read if offset is omitted, else the string
@@ -2303,10 +2303,10 @@ mta.schedule(638, 1).then(function(result) {
             }
             return forceCopy && !copied ? b.copy().array : b.array;
         };
-        
+
         // Available with node.js only
         if (Buffer) {
-    
+
             /**
              * Returns a node Buffer compacted to contain this ByteBuffer's actual contents. Will transparently
              *  {@link ByteBuffer#flip} the ByteBuffer if its offset is larger than its length. Will also copy all data (not
@@ -2324,12 +2324,12 @@ mta.schedule(638, 1).then(function(result) {
                 }
                 return new Buffer(new Uint8Array(this.array).subarray(offset, length));
             };
-            
+
         }
 
         return ByteBuffer;
     }
-    
+
     // Enable module loading if available
     if (typeof module !== 'undefined' && module["exports"]) { // CommonJS
         module["exports"] = loadByteBuffer(require("long"));
@@ -3988,7 +3988,7 @@ function DBCSCodec(codecOptions, iconv) {
     this.decodeTables = [];
     this.decodeTables[0] = UNASSIGNED_NODE.slice(0); // Create root node.
 
-    // Sometimes a MBCS char corresponds to a sequence of unicode chars. We store them as arrays of integers here. 
+    // Sometimes a MBCS char corresponds to a sequence of unicode chars. We store them as arrays of integers here.
     this.decodeTableSeq = [];
 
     // Actual mapping tables consist of chunks. Use them to fill up decode tables.
@@ -3997,7 +3997,7 @@ function DBCSCodec(codecOptions, iconv) {
 
     this.defaultCharUnicode = iconv.defaultCharUnicode;
 
-    
+
     // Encode tables: Unicode -> DBCS.
 
     // `encodeTable` is array mapping from unicode char to encoded char. All its values are integers for performance.
@@ -4006,7 +4006,7 @@ function DBCSCodec(codecOptions, iconv) {
     //         == UNASSIGNED -> no conversion found. Output a default char.
     //         <= SEQ_START  -> it's an index in encodeTableSeq, see below. The character starts a sequence.
     this.encodeTable = [];
-    
+
     // `encodeTableSeq` is used when a sequence of unicode characters is encoded as a single code. We use a tree of
     // objects where keys correspond to characters in sequence and leafs are the encoded dbcs values. A special DEF_CHAR key
     // means end of sequence (needed when one sequence is a strict subsequence of another).
@@ -4024,7 +4024,7 @@ function DBCSCodec(codecOptions, iconv) {
                 for (var j = val.from; j <= val.to; j++)
                     skipEncodeChars[j] = true;
         }
-        
+
     // Use decode trie to recursively fill out encode tables.
     this._fillEncodeTable(0, 0, skipEncodeChars);
 
@@ -4061,7 +4061,7 @@ function DBCSCodec(codecOptions, iconv) {
             thirdByteNode[i] = NODE_START - fourthByteNodeIdx;
         for (var i = 0x30; i <= 0x39; i++)
             fourthByteNode[i] = GB18030_CODE
-    }        
+    }
 }
 
 DBCSCodec.prototype.encoder = DBCSEncoder;
@@ -4126,7 +4126,7 @@ DBCSCodec.prototype._addDecodeChunk = function(chunk) {
                 else
                     writeTable[curAddr++] = code; // Basic char
             }
-        } 
+        }
         else if (typeof part === "number") { // Integer, meaning increasing sequence starting with prev character.
             var charCode = writeTable[curAddr - 1] + 1;
             for (var l = 0; l < part; l++)
@@ -4157,7 +4157,7 @@ DBCSCodec.prototype._setEncodeChar = function(uCode, dbcsCode) {
 }
 
 DBCSCodec.prototype._setEncodeSequence = function(seq, dbcsCode) {
-    
+
     // Get the root of character tree according to first character of the sequence.
     var uCode = seq[0];
     var bucket = this._getEncodeBucket(uCode);
@@ -4218,7 +4218,7 @@ function DBCSEncoder(options, codec) {
     // Encoder state
     this.leadSurrogate = -1;
     this.seqObj = undefined;
-    
+
     // Static data
     this.encodeTable = codec.encodeTable;
     this.encodeTableSeq = codec.encodeTableSeq;
@@ -4227,7 +4227,7 @@ function DBCSEncoder(options, codec) {
 }
 
 DBCSEncoder.prototype.write = function(str) {
-    var newBuf = new Buffer(str.length * (this.gb18030 ? 4 : 3)), 
+    var newBuf = new Buffer(str.length * (this.gb18030 ? 4 : 3)),
         leadSurrogate = this.leadSurrogate,
         seqObj = this.seqObj, nextChar = -1,
         i = 0, j = 0;
@@ -4240,7 +4240,7 @@ DBCSEncoder.prototype.write = function(str) {
         }
         else {
             var uCode = nextChar;
-            nextChar = -1;    
+            nextChar = -1;
         }
 
         // 1. Handle surrogates.
@@ -4262,7 +4262,7 @@ DBCSEncoder.prototype.write = function(str) {
                     // Incomplete surrogate pair - only trail surrogate found.
                     uCode = UNASSIGNED;
                 }
-                
+
             }
         }
         else if (leadSurrogate !== -1) {
@@ -4303,7 +4303,7 @@ DBCSEncoder.prototype.write = function(str) {
             var subtable = this.encodeTable[uCode >> 8];
             if (subtable !== undefined)
                 dbcsCode = subtable[uCode & 0xFF];
-            
+
             if (dbcsCode <= SEQ_START) { // Sequence start
                 seqObj = this.encodeTableSeq[SEQ_START-dbcsCode];
                 continue;
@@ -4326,7 +4326,7 @@ DBCSEncoder.prototype.write = function(str) {
         // 3. Write dbcsCode character.
         if (dbcsCode === UNASSIGNED)
             dbcsCode = this.defaultCharSingleByte;
-        
+
         if (dbcsCode < 0x100) {
             newBuf[j++] = dbcsCode;
         }
@@ -4373,7 +4373,7 @@ DBCSEncoder.prototype.end = function() {
         newBuf[j++] = this.defaultCharSingleByte;
         this.leadSurrogate = -1;
     }
-    
+
     return newBuf.slice(0, j);
 }
 
@@ -4397,21 +4397,21 @@ function DBCSDecoder(options, codec) {
 
 DBCSDecoder.prototype.write = function(buf) {
     var newBuf = new Buffer(buf.length*2),
-        nodeIdx = this.nodeIdx, 
+        nodeIdx = this.nodeIdx,
         prevBuf = this.prevBuf, prevBufOffset = this.prevBuf.length,
         seqStart = -this.prevBuf.length, // idx of the start of current parsed sequence.
         uCode;
 
     if (prevBufOffset > 0) // Make prev buf overlap a little to make it easier to slice later.
         prevBuf = Buffer.concat([prevBuf, buf.slice(0, 10)]);
-    
+
     for (var i = 0, j = 0; i < buf.length; i++) {
         var curByte = (i >= 0) ? buf[i] : prevBuf[i + prevBufOffset];
 
         // Lookup in current trie node.
         var uCode = this.decodeTables[nodeIdx][curByte];
 
-        if (uCode >= 0) { 
+        if (uCode >= 0) {
             // Normal character, just use it.
         }
         else if (uCode === UNASSIGNED) { // Unknown char.
@@ -4443,7 +4443,7 @@ DBCSDecoder.prototype.write = function(buf) {
             throw new Error("iconv-lite internal error: invalid decoding table value " + uCode + " at " + nodeIdx + "/" + curByte);
 
         // Write the character to buffer, handling higher planes using surrogate pair.
-        if (uCode > 0xFFFF) { 
+        if (uCode > 0xFFFF) {
             uCode -= 0x10000;
             var uCodeLead = 0xD800 + Math.floor(uCode / 0x400);
             newBuf[j++] = uCodeLead & 0xFF;
@@ -4508,11 +4508,11 @@ function findIdx(table, val) {
 // require()-s are direct to support Browserify.
 
 module.exports = {
-    
+
     // == Japanese/ShiftJIS ====================================================
     // All japanese encodings are based on JIS X set of standards:
     // JIS X 0201 - Single-byte encoding of ASCII + ¥ + Kana chars at 0xA1-0xDF.
-    // JIS X 0208 - Main set of 6879 characters, placed in 94x94 plane, to be encoded by 2 bytes. 
+    // JIS X 0208 - Main set of 6879 characters, placed in 94x94 plane, to be encoded by 2 bytes.
     //              Has several variations in 1978, 1983, 1990 and 1997.
     // JIS X 0212 - Supplementary plane of 6067 chars in 94x94 plane. 1990. Effectively dead.
     // JIS X 0213 - Extension and modern replacement of 0208 and 0212. Total chars: 11233.
@@ -4530,7 +4530,7 @@ module.exports = {
     //               0x8F, (0xA1-0xFE)x2 - 0212 plane (94x94).
     //  * JIS X 208: 7-bit, direct encoding of 0208. Byte ranges: 0x21-0x7E (94 values). Uncommon.
     //               Used as-is in ISO2022 family.
-    //  * ISO2022-JP: Stateful encoding, with escape sequences to switch between ASCII, 
+    //  * ISO2022-JP: Stateful encoding, with escape sequences to switch between ASCII,
     //                0201-1976 Roman, 0208-1978, 0208-1983.
     //  * ISO2022-JP-1: Adds esc seq for 0212-1990.
     //  * ISO2022-JP-2: Adds esc seq for GB2313-1980, KSX1001-1992, ISO8859-1, ISO8859-7.
@@ -4642,7 +4642,7 @@ module.exports = {
     //  * Windows CP 951: Microsoft variant of Big5-HKSCS-2001. Seems to be never public. http://me.abelcheung.org/articles/research/what-is-cp951/
     //  * Big5-2003 (Taiwan standard) almost superset of cp950.
     //  * Unicode-at-on (UAO) / Mozilla 1.8. Falling out of use on the Web. Not supported by other browsers.
-    //  * Big5-HKSCS (-2001, -2004, -2008). Hong Kong standard. 
+    //  * Big5-HKSCS (-2001, -2004, -2008). Hong Kong standard.
     //    many unicode code points moved from PUA to Supplementary plane (U+2XXXX) over the years.
     //    Plus, it has 4 combining sequences.
     //    Seems that Mozilla refused to support it for 10 yrs. https://bugzilla.mozilla.org/show_bug.cgi?id=162431 https://bugzilla.mozilla.org/show_bug.cgi?id=310299
@@ -4653,7 +4653,7 @@ module.exports = {
     //    In the encoder, it might make sense to support encoding old PUA mappings to Big5 bytes seq-s.
     //    Official spec: http://www.ogcio.gov.hk/en/business/tech_promotion/ccli/terms/doc/2003cmp_2008.txt
     //                   http://www.ogcio.gov.hk/tc/business/tech_promotion/ccli/terms/doc/hkscs-2008-big5-iso.txt
-    // 
+    //
     // Current understanding of how to deal with Big5(-HKSCS) is in the Encoding Standard, http://encoding.spec.whatwg.org/#big5-encoder
     // Unicode mapping (http://www.unicode.org/Public/MAPPINGS/OBSOLETE/EASTASIA/OTHER/BIG5.TXT) is said to be wrong.
 
@@ -4694,7 +4694,7 @@ var modules = [
     require("./dbcs-data"),
 ];
 
-// Put all encoding/alias/codec definitions to single object and export it. 
+// Put all encoding/alias/codec definitions to single object and export it.
 for (var i = 0; i < modules.length; i++) {
     var module = modules[i];
     for (var enc in module)
@@ -4841,7 +4841,7 @@ function InternalDecoderCesu8(options, codec) {
 }
 
 InternalDecoderCesu8.prototype.write = function(buf) {
-    var acc = this.acc, contBytes = this.contBytes, accBytes = this.accBytes, 
+    var acc = this.acc, contBytes = this.contBytes, accBytes = this.accBytes,
         res = '';
     for (var i = 0; i < buf.length; i++) {
         var curByte = buf[i];
@@ -4897,17 +4897,17 @@ InternalDecoderCesu8.prototype.end = function() {
 var Buffer = require("buffer").Buffer;
 
 // Single-byte codec. Needs a 'chars' string parameter that contains 256 or 128 chars that
-// correspond to encoded bytes (if 128 - then lower half is ASCII). 
+// correspond to encoded bytes (if 128 - then lower half is ASCII).
 
 exports._sbcs = SBCSCodec;
 function SBCSCodec(codecOptions, iconv) {
     if (!codecOptions)
         throw new Error("SBCS codec is called without the data.")
-    
+
     // Prepare char buffer for decoding.
     if (!codecOptions.chars || (codecOptions.chars.length !== 128 && codecOptions.chars.length !== 256))
         throw new Error("Encoding '"+codecOptions.type+"' has incorrect 'chars' (must be of len 128 or 256)");
-    
+
     if (codecOptions.chars.length === 128) {
         var asciiString = "";
         for (var i = 0; i < 128; i++)
@@ -4916,7 +4916,7 @@ function SBCSCodec(codecOptions, iconv) {
     }
 
     this.decodeBuf = new Buffer(codecOptions.chars, 'ucs2');
-    
+
     // Encoding buffer.
     var encodeBuf = new Buffer(65536);
     encodeBuf.fill(iconv.defaultCharSingleByte.charCodeAt(0));
@@ -4939,7 +4939,7 @@ SBCSEncoder.prototype.write = function(str) {
     var buf = new Buffer(str.length);
     for (var i = 0; i < str.length; i++)
         buf[i] = this.encodeBuf[str.charCodeAt(i)];
-    
+
     return buf;
 }
 
@@ -6922,7 +6922,7 @@ Utf16Decoder.prototype.write = function(buf) {
         // Codec is not chosen yet. Accumulate initial bytes.
         this.initialBytes.push(buf);
         this.initialBytesLen += buf.length;
-        
+
         if (this.initialBytesLen < 16) // We need more bytes to use space heuristic (see below)
             return '';
 
@@ -7013,8 +7013,8 @@ Utf7Encoder.prototype.write = function(str) {
     // Naive implementation.
     // Non-direct chars are encoded as "+<base64>-"; single "+" char is encoded as "+-".
     return new Buffer(str.replace(nonDirectChars, function(chunk) {
-        return "+" + (chunk === '+' ? '' : 
-            this.iconv.encode(chunk, 'utf16-be').toString('base64').replace(/=+$/, '')) 
+        return "+" + (chunk === '+' ? '' :
+            this.iconv.encode(chunk, 'utf16-be').toString('base64').replace(/=+$/, ''))
             + "-";
     }.bind(this)));
 }
@@ -7036,7 +7036,7 @@ var base64Chars = [];
 for (var i = 0; i < 256; i++)
     base64Chars[i] = base64Regex.test(String.fromCharCode(i));
 
-var plusChar = '+'.charCodeAt(0), 
+var plusChar = '+'.charCodeAt(0),
     minusChar = '-'.charCodeAt(0),
     andChar = '&'.charCodeAt(0);
 
@@ -7353,7 +7353,7 @@ module.exports = function (iconv) {
         }
 
         var nodeNativeEncodings = {
-            'hex': true, 'utf8': true, 'utf-8': true, 'ascii': true, 'binary': true, 
+            'hex': true, 'utf8': true, 'utf-8': true, 'ascii': true, 'binary': true,
             'base64': true, 'ucs2': true, 'ucs-2': true, 'utf16le': true, 'utf-16le': true,
         };
 
@@ -7573,7 +7573,7 @@ iconv.encode = function encode(str, encoding, options) {
 
     var res = encoder.write(str);
     var trail = encoder.end();
-    
+
     return (trail && trail.length > 0) ? Buffer.concat([res, trail]) : res;
 }
 
@@ -7613,7 +7613,7 @@ iconv._codecDataCache = {};
 iconv.getCodec = function getCodec(encoding) {
     if (!iconv.encodings)
         iconv.encodings = require("../encodings"); // Lazy load all encoding definitions.
-    
+
     // Canonicalize encoding name: strip all non-alphanumeric chars and appended year.
     var enc = (''+encoding).toLowerCase().replace(/[^0-9a-z]|:\d{4}$/g, "");
 
@@ -7637,7 +7637,7 @@ iconv.getCodec = function getCodec(encoding) {
 
                 if (!codecOptions.encodingName)
                     codecOptions.encodingName = enc;
-                
+
                 enc = codecDef.type;
                 break;
 
@@ -7707,7 +7707,7 @@ var Buffer = require("buffer").Buffer,
 
 // == Exports ==================================================================
 module.exports = function(iconv) {
-    
+
     // Additional Public API.
     iconv.encodeStream = function encodeStream(encoding, options) {
         return new IconvLiteEncoderStream(iconv.getEncoder(encoding, options), options);
@@ -7802,7 +7802,7 @@ IconvLiteDecoderStream.prototype._transform = function(chunk, encoding, done) {
 IconvLiteDecoderStream.prototype._flush = function(done) {
     try {
         var res = this.conv.end();
-        if (res && res.length) this.push(res, this.encoding);                
+        if (res && res.length) this.push(res, this.encoding);
         done();
     }
     catch (e) {
@@ -7888,7 +7888,7 @@ isStream.transform = function (stream) {
      * (-2^63) because -MIN_VALUE == MIN_VALUE (since 2^63 cannot be represented as
      * a positive number, it overflows back into a negative).  Not handling this
      * case would often result in infinite recursion.
-     * 
+     *
      * @exports Long
      * @class A Long class for representing a 64-bit two's-complement integer value.
      * @param {number|!{low: number, high: number, unsigned: boolean}} low The low (signed) 32 bits of the long.
@@ -7903,7 +7903,7 @@ isStream.transform = function (stream) {
             unsigned = low.unsigned;
             low = low.low;
         }
-        
+
         /**
          * The low 32 bits as a signed value.
          * @type {number}
@@ -7930,7 +7930,7 @@ isStream.transform = function (stream) {
 
     // NOTE: The following cache variables are used internally only and are therefore not exposed as properties of the
     // Long class.
-    
+
     /**
      * A cache of the Long representations of small integer values.
      * @type {!Object}
@@ -8080,7 +8080,7 @@ isStream.transform = function (stream) {
 
     // NOTE: the compiler should inline these constant values below and then remove these variables, so there should be
     // no runtime penalty for these.
-    
+
     // NOTE: The following constant values are used internally only and are therefore not exposed as properties of the
     // Long class.
 
@@ -8444,7 +8444,7 @@ isStream.transform = function (stream) {
      */
     Long.prototype.add = function(other) {
         // Divide each number into 4 chunks of 16 bits, and then sum the chunks.
-        
+
         var a48 = this.high >>> 16;
         var a32 = this.high & 0xFFFF;
         var a16 = this.low >>> 16;
@@ -8516,7 +8516,7 @@ isStream.transform = function (stream) {
 
         // Divide each long into 4 chunks of 16 bits, and then add up 4x4 products.
         // We can skip products that would overflow.
-        
+
         var a48 = this.high >>> 16;
         var a32 = this.high & 0xFFFF;
         var a16 = this.low >>> 16;
@@ -8593,7 +8593,7 @@ isStream.transform = function (stream) {
         } else if (other.isNegative()) {
             return this.div(other.negate()).negate();
         }
-        
+
         // Repeat the following until the remainder is less than other:  find a
         // floating-point that approximates remainder / other *from below*, add this
         // into the result, and subtract it from the remainder.  It is critical that
@@ -8755,7 +8755,7 @@ isStream.transform = function (stream) {
         l.unsigned = true;
         return l;
     };
-    
+
     /**
      * @return {Long} Cloned instance with the same low/high bits and unsigned flag.
      * @expose
@@ -8819,7 +8819,7 @@ var utils = require('./utils');
 var Mta = module.exports = function (options) {
 
   this.urls = {
-    gtfs: 'http://datamine.mta.info/mta_esi.php?',
+    gtfs: 'https://datamine.mta.info/mta_esi.php?',
     status: 'http://web.mta.info/status/serviceStatus.txt'
   };
 
@@ -9056,46 +9056,46 @@ module.exports = function (res) {
 
 },{"underscore":48,"xml2js":54}],36:[function(require,module,exports){
 module.exports = {
-  
+
   binaryInsert: function (sortBy, obj, array, start, end) {
     var length = array.length;
     var start = typeof start === 'undefined' ? 0 : start;
     var end = typeof end === 'undefined' ? length - 1 : end;
     var m = start + Math.floor((end - start) / 2);
     var val = obj[sortBy];
-    
+
     if (length === 0) {
       array.push(obj);
       return;
     }
-    
+
     if (val > array[end][sortBy]) {
       array.splice(end + 1, 0, obj);
       return;
     }
-    
+
     if (val < array[start][sortBy]) {
       array.splice(start, 0, obj);
       return;
     }
-    
+
     if (start >= end) {
       return;
     }
-    
+
     if (val < array[m][sortBy]) {
       this.binaryInsert(sortBy, obj, array, start, m - 1);
       return;
     }
-    
+
     if (val > array[m][sortBy]) {
       this.binaryInsert(sortBy, obj, array, m + 1, end);
       return;
     }
-    
+
     // no dupes
   },
-  
+
   parseObj: function (t, s) {
     return {
       routeId: t.route_id,
@@ -20207,7 +20207,7 @@ Response.prototype.clone = function() {
  */
 (function(global) {
     "use strict";
-    
+
     function loadProtoBuf(ByteBuffer) {
 
         /**
@@ -20217,7 +20217,7 @@ Response.prototype.clone = function() {
          * @expose
          */
         var ProtoBuf = {};
-        
+
         /**
          * ProtoBuf.js version.
          * @type {string}
@@ -20374,14 +20374,14 @@ Response.prototype.clone = function() {
          * @expose
          */
         ProtoBuf.convertFieldsToCamelCase = false;
-        
+
         /**
          * @alias ProtoBuf.Util
          * @expose
          */
         ProtoBuf.Util = (function() {
             "use strict";
-        
+
             // Object.create polyfill
             // ref: https://developer.mozilla.org/de/docs/JavaScript/Reference/Global_Objects/Object/create
             if (!Object.create) {
@@ -20395,14 +20395,14 @@ Response.prototype.clone = function() {
                     return new F();
                 };
             }
-        
+
             /**
              * ProtoBuf utilities.
              * @exports ProtoBuf.Util
              * @namespace
              */
             var Util = {};
-        
+
             /**
              * Flag if running in node or not.
              * @type {boolean}
@@ -20410,7 +20410,7 @@ Response.prototype.clone = function() {
              * @expose
              */
             Util.IS_NODE = (typeof window === 'undefined' || !window.window) && typeof require === 'function' && typeof process !== 'undefined' && typeof process["nextTick"] === 'function';
-            
+
             /**
              * Constructs a XMLHttpRequest object.
              * @return {XMLHttpRequest}
@@ -20435,7 +20435,7 @@ Response.prototype.clone = function() {
                 if (!xhr) throw(new Error("XMLHttpRequest is not supported"));
                 return xhr;
             };
-        
+
             /**
              * Fetches a resource.
              * @param {string} path Resource path
@@ -20487,7 +20487,7 @@ Response.prototype.clone = function() {
                     }
                 }
             };
-        
+
             /**
              * Tests if an object is an array.
              * @param {*} obj Object to test
@@ -20500,16 +20500,16 @@ Response.prototype.clone = function() {
                 if (Array.isArray) return Array.isArray(obj);
                 return Object.prototype.toString.call(obj) === "[object Array]";
             };
-            
+
             return Util;
-        })();        
+        })();
         /**
          * @alias ProtoBuf.Lang
          * @expose
          */
         ProtoBuf.Lang = (function() {
             "use strict";
-            
+
             /**
              * ProtoBuf Language.
              * @exports ProtoBuf.Lang
@@ -20529,9 +20529,9 @@ Response.prototype.clone = function() {
                 STRINGCLOSE: '"',
                 COPTOPEN: '(',
                 COPTCLOSE: ')',
-        
+
                 DELIM: /[\s\{\}=;\[\],"\(\)]/g,
-                
+
                 KEYWORD: /^(?:package|option|import|message|enum|extend|service|syntax|extensions)$/,
                 RULE: /^(?:required|optional|repeated)$/,
                 TYPE: /^(?:double|float|int32|uint32|sint32|int64|uint64|sint64|fixed32|sfixed32|fixed64|sfixed64|bool|string|bytes)$/,
@@ -20550,26 +20550,26 @@ Response.prototype.clone = function() {
                 WHITESPACE: /\s/,
                 STRING: /"([^"\\]*(\\.[^"\\]*)*)"/g,
                 BOOL: /^(?:true|false)$/i,
-        
+
                 ID_MIN: 1,
                 ID_MAX: 0x1FFFFFFF
             };
             return Lang;
         })();
-                
+
         /**
          * Utilities to parse .proto files.
          * @namespace
          * @expose
          */
         ProtoBuf.DotProto = {}; // Not present in "noparse" builds
-        
+
         /**
          * @alias ProtoBuf.DotProto.Tokenizer
          * @expose
          */
         ProtoBuf.DotProto.Tokenizer = (function(Lang) {
-        
+
             /**
              * Constructs a new Tokenizer.
              * @exports ProtoBuf.DotProto.Tokenizer
@@ -20578,35 +20578,35 @@ Response.prototype.clone = function() {
              * @constructor
              */
             var Tokenizer = function(proto) {
-                
+
                 /**
                  * Source to parse.
                  * @type {string}
                  * @expose
                  */
                 this.source = ""+proto;
-                
+
                 /**
                  * Current index.
                  * @type {number}
                  * @expose
                  */
                 this.index = 0;
-        
+
                 /**
                  * Current line.
                  * @type {number}
                  * @expose
                  */
                 this.line = 1;
-        
+
                 /**
                  * Stacked values.
                  * @type {Array}
                  * @expose
                  */
                 this.stack = [];
-        
+
                 /**
                  * Whether currently reading a string or not.
                  * @type {boolean}
@@ -20614,7 +20614,7 @@ Response.prototype.clone = function() {
                  */
                 this.readingString = false;
             };
-        
+
             /**
              * Reads a string beginning at the current index.
              * @return {string} The string
@@ -20632,7 +20632,7 @@ Response.prototype.clone = function() {
                 }
                 throw(new Error("Illegal string value at line "+this.line+", index "+this.index));
             };
-        
+
             /**
              * Gets the next token and advances by one.
              * @return {?string} Token or `null` on EOF
@@ -20684,7 +20684,7 @@ Response.prototype.clone = function() {
                     }
                 } while (repeat);
                 if (this.index === this.source.length) return null;
-        
+
                 // Read the next token
                 var end = this.index;
                 Lang.DELIM.lastIndex = 0;
@@ -20703,7 +20703,7 @@ Response.prototype.clone = function() {
                 }
                 return token;
             };
-        
+
             /**
              * Peeks for the next token.
              * @return {?string} Token or `null` on EOF
@@ -20718,7 +20718,7 @@ Response.prototype.clone = function() {
                 }
                 return this.stack[0];
             };
-        
+
             /**
              * Returns a string representation of this object.
              * @return {string} String representation as of "Tokenizer(index/length)"
@@ -20727,18 +20727,18 @@ Response.prototype.clone = function() {
             Tokenizer.prototype.toString = function() {
                 return "Tokenizer("+this.index+"/"+this.source.length+" at line "+this.line+")";
             };
-            
+
             return Tokenizer;
-            
+
         })(ProtoBuf.Lang);
-                
+
         /**
          * @alias ProtoBuf.DotProto.Parser
          * @expose
          */
         ProtoBuf.DotProto.Parser = (function(ProtoBuf, Lang, Tokenizer) {
             "use strict";
-            
+
             /**
              * Constructs a new Parser.
              * @exports ProtoBuf.DotProto.Parser
@@ -20747,7 +20747,7 @@ Response.prototype.clone = function() {
              * @constructor
              */
             var Parser = function(proto) {
-        
+
                 /**
                  * Tokenizer.
                  * @type {ProtoBuf.DotProto.Tokenizer}
@@ -20755,7 +20755,7 @@ Response.prototype.clone = function() {
                  */
                 this.tn = new Tokenizer(proto);
             };
-        
+
             /**
              * Runs the parser.
              * @return {{package: string|null, messages: Array.<object>, enums: Array.<object>, imports: Array.<string>, options: object<string,*>}}
@@ -20815,7 +20815,7 @@ Response.prototype.clone = function() {
                 delete topLevel["name"];
                 return topLevel;
             };
-        
+
             /**
              * Parses a number value.
              * @param {string} val Number value to parse
@@ -20839,7 +20839,7 @@ Response.prototype.clone = function() {
                 }
                 throw(new Error("Illegal number value at line "+this.tn.line+": "+(sign < 0 ? '-' : '')+val));
             };
-        
+
             /**
              * Parses an ID value.
              * @param {string} val ID value to parse
@@ -20869,7 +20869,7 @@ Response.prototype.clone = function() {
                 }
                 return id;
             };
-        
+
             /**
              * Parses the package definition.
              * @param {string} token Initial token
@@ -20889,11 +20889,11 @@ Response.prototype.clone = function() {
                 }
                 return pkg;
             };
-        
+
             /**
              * Parses an import definition.
              * @param {string} token Initial token
-             * @return {string} Import file name 
+             * @return {string} Import file name
              * @throws {Error} If the import definition cannot be parsed
              * @private
              */
@@ -20916,7 +20916,7 @@ Response.prototype.clone = function() {
                 }
                 return imported;
             };
-        
+
             /**
              * Parses a namespace option.
              * @param {Object} parent Parent definition
@@ -20976,7 +20976,7 @@ Response.prototype.clone = function() {
                 }
                 parent["options"][name] = value;
             };
-        
+
             /**
              * Parses an ignored block of the form ['keyword', 'typeref', '{' ... '}'].
              * @param {Object} parent Parent definition
@@ -21012,7 +21012,7 @@ Response.prototype.clone = function() {
                     }
                 } while(true);
             };
-        
+
             /**
              * Parses an ignored statement of the form ['keyword', ..., ';'].
              * @param {Object} parent Parent definition
@@ -21030,7 +21030,7 @@ Response.prototype.clone = function() {
                     if (token === Lang.END) break;
                 } while (true);
             };
-        
+
             /**
              * Parses a service definition.
              * @param {Object} parent Parent definition
@@ -21065,7 +21065,7 @@ Response.prototype.clone = function() {
                 } while (token !== Lang.CLOSE);
                 parent["services"].push(svc);
             };
-        
+
             /**
              * Parses a RPC service definition of the form ['rpc', name, (request), 'returns', (response)].
              * @param {Object} svc Parent definition
@@ -21127,7 +21127,7 @@ Response.prototype.clone = function() {
                 if (typeof svc[type] === 'undefined') svc[type] = {};
                 svc[type][name] = method;
             };
-        
+
             /**
              * Parses a message definition.
              * @param {Object} parent Parent definition
@@ -21178,7 +21178,7 @@ Response.prototype.clone = function() {
                 parent["messages"].push(msg);
                 return msg;
             };
-        
+
             /**
              * Parses a message field.
              * @param {Object} msg Message definition
@@ -21222,7 +21222,7 @@ Response.prototype.clone = function() {
                 }
                 msg["fields"].push(fld);
             };
-        
+
             /**
              * Parses a set of field option definitions.
              * @param {Object} msg Message definition
@@ -21247,7 +21247,7 @@ Response.prototype.clone = function() {
                     first = false;
                 } while (true);
             };
-        
+
             /**
              * Parses a single field option.
              * @param {Object} msg Message definition
@@ -21300,7 +21300,7 @@ Response.prototype.clone = function() {
                 }
                 fld["options"][name] = value;
             };
-        
+
             /**
              * Parses an enum.
              * @param {Object} msg Message definition
@@ -21340,7 +21340,7 @@ Response.prototype.clone = function() {
                 } while (true);
                 msg["enums"].push(enm);
             };
-        
+
             /**
              * Parses an enum value.
              * @param {Object} enm Enum definition
@@ -21373,7 +21373,7 @@ Response.prototype.clone = function() {
                     throw(new Error("Illegal enum value delimiter in enum "+enm.name+" at line "+this.tn.line+": "+token+" ('"+Lang.END+"' expected)"));
                 }
             };
-        
+
             /**
              * Parses an extensions statement.
              * @param {Object} msg Message object
@@ -21410,7 +21410,7 @@ Response.prototype.clone = function() {
                 }
                 return range;
             };
-        
+
             /**
              * Parses an extend block.
              * @param {Object} parent Parent object
@@ -21446,7 +21446,7 @@ Response.prototype.clone = function() {
                 parent["messages"].push(ext);
                 return ext;
             };
-        
+
             /**
              * Returns a string representation of this object.
              * @returns {string} String representation as of "Parser"
@@ -21454,24 +21454,24 @@ Response.prototype.clone = function() {
             Parser.prototype.toString = function() {
                 return "Parser";
             };
-            
+
             return Parser;
-            
+
         })(ProtoBuf, ProtoBuf.Lang, ProtoBuf.DotProto.Tokenizer);
-                        
+
         /**
          * @alias ProtoBuf.Reflect
          * @expose
          */
         ProtoBuf.Reflect = (function(ProtoBuf) {
             "use strict";
-            
+
             /**
              * @exports ProtoBuf.Reflect
              * @namespace
              */
             var Reflect = {};
-        
+
             /**
              * Constructs a Reflect base class.
              * @exports ProtoBuf.Reflect.T
@@ -21486,7 +21486,7 @@ Response.prototype.clone = function() {
                  * @expose
                  */
                 this.parent = parent;
-        
+
                 /**
                  * Object name in namespace.
                  * @type {string}
@@ -21494,7 +21494,7 @@ Response.prototype.clone = function() {
                  */
                 this.name = name;
             };
-        
+
             /**
              * Returns the fully qualified name of this object.
              * @returns {string} Fully qualified name as of ".PATH.TO.THIS"
@@ -21510,7 +21510,7 @@ Response.prototype.clone = function() {
                 } while (true);
                 return name;
             };
-        
+
             /**
              * Returns a string representation of this Reflect object (its fully qualified name).
              * @param {boolean=} includeClass Set to true to include the class name. Defaults to false.
@@ -21542,7 +21542,7 @@ Response.prototype.clone = function() {
                 }
                 return name;
             };
-        
+
             /**
              * Builds this type.
              * @throws {Error} If this type cannot be built directly
@@ -21551,13 +21551,13 @@ Response.prototype.clone = function() {
             T.prototype.build = function() {
                 throw(new Error(this.toString(true)+" cannot be built directly"));
             };
-        
+
             /**
              * @alias ProtoBuf.Reflect.T
              * @expose
              */
             Reflect.T = T;
-        
+
             /**
              * Constructs a new Namespace.
              * @exports ProtoBuf.Reflect.Namespace
@@ -21569,23 +21569,23 @@ Response.prototype.clone = function() {
              */
             var Namespace = function(parent, name, options) {
                 T.call(this, parent, name);
-        
+
                 /**
                  * Children inside the namespace.
                  * @type {Array.<ProtoBuf.Reflect.T>}
                  */
                 this.children = [];
-        
+
                 /**
                  * Options.
                  * @type {Object.<string, *>}
                  */
                 this.options = options || {};
             };
-        
+
             // Extends T
             Namespace.prototype = Object.create(T.prototype);
-        
+
             /**
              * Returns an array of the namespace's children.
              * @param {ProtoBuf.Reflect.T=} type Filter type (returns instances of this type only). Defaults to null (all children).
@@ -21605,7 +21605,7 @@ Response.prototype.clone = function() {
                 }
                 return children;
             };
-        
+
             /**
              * Adds a child to the namespace.
              * @param {ProtoBuf.Reflect.T} child Child
@@ -21626,7 +21626,7 @@ Response.prototype.clone = function() {
                 }
                 this.children.push(child);
             };
-        
+
             /**
              * Tests if this namespace has a child with the specified name.
              * @param {string|number} nameOrId Child name or id
@@ -21642,7 +21642,7 @@ Response.prototype.clone = function() {
                 }
                 return false;
             };
-        
+
             /**
              * Gets a child by its name.
              * @param {string|number} nameOrId Child name or id
@@ -21658,7 +21658,7 @@ Response.prototype.clone = function() {
                 }
                 return null;
             };
-        
+
             /**
              * Resolves a reflect object inside of this namespace.
              * @param {string} qn Qualified name to resolve
@@ -21693,7 +21693,7 @@ Response.prototype.clone = function() {
                 } while (ptr != null);
                 return ptr;
             };
-        
+
             /**
              * Builds the namespace and returns the runtime counterpart.
              * @return {Object.<string,Function|Object>} Runtime namespace
@@ -21719,7 +21719,7 @@ Response.prototype.clone = function() {
                 }
                 return ns;
             };
-        
+
             /**
              * Builds the namespace's '$options' property.
              * @return {Object.<string,*>}
@@ -21739,7 +21739,7 @@ Response.prototype.clone = function() {
                 }
                 return opt;
             };
-        
+
             /**
              * Gets the value assigned to the option with the specified name.
              * @param {string=} name Returns the option value if specified, otherwise all options are returned.
@@ -21751,13 +21751,13 @@ Response.prototype.clone = function() {
                 }
                 return typeof this.options[name] != 'undefined' ? this.options[name] : null;
             };
-        
+
             /**
              * @alias ProtoBuf.Reflect.Namespace
              * @expose
              */
             Reflect.Namespace = Namespace;
-        
+
             /**
              * Constructs a new Message.
              * @exports ProtoBuf.Reflect.Message
@@ -21769,14 +21769,14 @@ Response.prototype.clone = function() {
              */
             var Message = function(parent, name, options) {
                 Namespace.call(this, parent, name, options);
-        
+
                 /**
                  * Extensions range.
                  * @type {!Array.<number>}
                  * @expose
                  */
                 this.extensions = [ProtoBuf.Lang.ID_MIN, ProtoBuf.Lang.ID_MAX];
-        
+
                 /**
                  * Runtime message class.
                  * @type {?function(new:ProtoBuf.Builder.Message)}
@@ -21784,10 +21784,10 @@ Response.prototype.clone = function() {
                  */
                 this.clazz = null;
             };
-        
+
             // Extends Namespace
             Message.prototype = Object.create(Namespace.prototype);
-        
+
             /**
              * Builds the message and returns the runtime counterpart, which is a fully functional class.
              * @see ProtoBuf.Builder.Message
@@ -21798,11 +21798,11 @@ Response.prototype.clone = function() {
              */
             Message.prototype.build = function(rebuild) {
                 if (this.clazz && !rebuild) return this.clazz;
-                
+
                 // We need to create a prototyped Message class in an isolated scope
                 var clazz = (function(ProtoBuf, T) {
                     var fields = T.getChildren(Reflect.Message.Field);
-        
+
                     /**
                      * Constructs a new runtime Message.
                      * @name ProtoBuf.Builder.Message
@@ -21814,7 +21814,7 @@ Response.prototype.clone = function() {
                     var Message = function(values) {
                         ProtoBuf.Builder.Message.call(this);
                         var i, field;
-        
+
                         // Create fields on the object itself to allow setting and getting through Message#fieldname
                         for (i=0; i<fields.length; i++) {
                             field = fields[i];
@@ -21851,10 +21851,10 @@ Response.prototype.clone = function() {
                             }
                         }
                     };
-        
+
                     // Extends ProtoBuf.Builder.Message
                     Message.prototype = Object.create(ProtoBuf.Builder.Message.prototype);
-        
+
                     /**
                      * Adds a value to a repeated field.
                      * @name ProtoBuf.Builder.Message#add
@@ -21878,7 +21878,7 @@ Response.prototype.clone = function() {
                         if (this[field.name] === null) this[field.name] = [];
                         this[field.name].push(field.verifyValue(value, true));
                     };
-        
+
                     /**
                      * Sets a field value.
                      * @name ProtoBuf.Builder.Message#set
@@ -21898,7 +21898,7 @@ Response.prototype.clone = function() {
                         }
                         this[field.name] = field.verifyValue(value); // May throw
                     };
-        
+
                     /**
                      * Gets a value.
                      * @name ProtoBuf.Builder.Message#get
@@ -21918,12 +21918,12 @@ Response.prototype.clone = function() {
                         }
                         return this[field.name];
                     };
-        
+
                     // Getters and setters
-        
+
                     for (var i=0; i<fields.length; i++) {
                         var field = fields[i];
-                        
+
                         (function(field) {
                             // set/get[SomeValue]
                             var Name = field.originalName.replace(/(_[a-zA-Z])/g,
@@ -21932,14 +21932,14 @@ Response.prototype.clone = function() {
                                 }
                             );
                             Name = Name.substring(0,1).toUpperCase()+Name.substring(1);
-            
+
                             // set/get_[some_value]
                             var name = field.originalName.replace(/([A-Z])/g,
                                 function(match) {
                                     return "_"+match;
                                 }
                             );
-            
+
                             /**
                              * Sets a value. This method is present for each field, but only if there is no name conflict with
                              * another field.
@@ -21954,7 +21954,7 @@ Response.prototype.clone = function() {
                                     this.set(field.name, value);
                                 }
                             }
-            
+
                             /**
                              * Sets a value. This method is present for each field, but only if there is no name conflict with
                              * another field.
@@ -21969,7 +21969,7 @@ Response.prototype.clone = function() {
                                     this.set(field.name, value);
                                 };
                             }
-            
+
                             /**
                              * Gets a value. This method is present for each field, but only if there is no name conflict with
                              * another field.
@@ -21983,7 +21983,7 @@ Response.prototype.clone = function() {
                                     return this.get(field.name); // Does not throw, field exists
                                 }
                             }
-            
+
                             /**
                              * Gets a value. This method is present for each field, but only if there is no name conflict with
                              * another field.
@@ -21997,12 +21997,12 @@ Response.prototype.clone = function() {
                                     return this.get(field.name); // Does not throw, field exists
                                 };
                             }
-                            
+
                         })(field);
                     }
-        
+
                     // En-/decoding
-        
+
                     /**
                      * Encodes the message.
                      * @name ProtoBuf.Builder.Message#encode
@@ -22026,7 +22026,7 @@ Response.prototype.clone = function() {
                             throw(e);
                         }
                     };
-        
+
                     /**
                      * Directly encodes the message to an ArrayBuffer.
                      * @name ProtoBuf.Builder.Message#encodeAB
@@ -22045,7 +22045,7 @@ Response.prototype.clone = function() {
                             throw(err);
                         }
                     };
-        
+
                     /**
                      * Returns the message as an ArrayBuffer. This is an alias for {@link ProtoBuf.Builder.Message#encodeAB}.
                      * @name ProtoBuf.Builder.Message#toArrayBuffer
@@ -22056,7 +22056,7 @@ Response.prototype.clone = function() {
                      * @expose
                      */
                     Message.prototype.toArrayBuffer = Message.prototype.encodeAB;
-        
+
                     /**
                      * Directly encodes the message to a node Buffer.
                      * @name ProtoBuf.Builder.Message#encodeNB
@@ -22074,7 +22074,7 @@ Response.prototype.clone = function() {
                             throw(err);
                         }
                     };
-        
+
                     /**
                      * Returns the message as a node Buffer. This is an alias for {@link ProtoBuf.Builder.Message#encodeNB}.
                      * @name ProtoBuf.Builder.Message#encodeNB
@@ -22085,7 +22085,7 @@ Response.prototype.clone = function() {
                      * @expose
                      */
                     Message.prototype.toBuffer = Message.prototype.encodeNB;
-        
+
                     /**
                      * Directly encodes the message to a base64 encoded string.
                      * @name ProtoBuf.Builder.Message#encode64
@@ -22103,7 +22103,7 @@ Response.prototype.clone = function() {
                             throw(err);
                         }
                     };
-        
+
                     /**
                      * Returns the message as a base64 encoded string. This is an alias for {@link ProtoBuf.Builder.Message#encode64}.
                      * @name ProtoBuf.Builder.Message#toBase64
@@ -22114,7 +22114,7 @@ Response.prototype.clone = function() {
                      * @expose
                      */
                     Message.prototype.toBase64 = Message.prototype.encode64;
-        
+
                     /**
                      * Directly encodes the message to a hex encoded string.
                      * @name ProtoBuf.Builder.Message#encodeHex
@@ -22132,7 +22132,7 @@ Response.prototype.clone = function() {
                             throw(err);
                         }
                     };
-        
+
                     /**
                      * Returns the message as a hex encoded string. This is an alias for {@link ProtoBuf.Builder.Message#encodeHex}.
                      * @name ProtoBuf.Builder.Message#toHex
@@ -22143,7 +22143,7 @@ Response.prototype.clone = function() {
                      * @expose
                      */
                     Message.prototype.toHex = Message.prototype.encodeHex;
-        
+
                     /**
                      * Decodes the message from the specified buffer or string.
                      * @name ProtoBuf.Builder.Message.decode
@@ -22173,7 +22173,7 @@ Response.prototype.clone = function() {
                             throw(e);
                         }
                     };
-        
+
                     /**
                      * Decodes the message from the specified base64 encoded string.
                      * @name ProtoBuf.Builder.Message.decode64
@@ -22187,7 +22187,7 @@ Response.prototype.clone = function() {
                     Message.decode64 = function(str) {
                         return Message.decode(str, "base64");
                     };
-        
+
                     /**
                      * Decodes the message from the specified hex encoded string.
                      * @name ProtoBuf.Builder.Message.decodeHex
@@ -22201,9 +22201,9 @@ Response.prototype.clone = function() {
                     Message.decodeHex = function(str) {
                         return Message.decode(str, "hex");
                     };
-        
+
                     // Utility
-        
+
                     /**
                      * Returns a string representation of this Message.
                      * @name ProtoBuf.Builder.Message#toString
@@ -22214,9 +22214,9 @@ Response.prototype.clone = function() {
                     Message.prototype.toString = function() {
                         return T.toString();
                     };
-        
+
                     // Static
-                    
+
                     /**
                      * Options.
                      * @name ProtoBuf.Builder.Message.$options
@@ -22224,7 +22224,7 @@ Response.prototype.clone = function() {
                      * @expose
                      */
                     var O_o; // for cc
-                    
+
                     if (Object.defineProperty) {
                         Object.defineProperty(Message, '$options', {
                             'value': T.buildOpt(),
@@ -22233,11 +22233,11 @@ Response.prototype.clone = function() {
                             'writable': false
                         });
                     }
-                    
+
                     return Message;
-        
+
                 })(ProtoBuf, this);
-        
+
                 // Static enums and prototyped sub-messages
                 var children = this.getChildren();
                 for (var i=0; i<children.length; i++) {
@@ -22253,7 +22253,7 @@ Response.prototype.clone = function() {
                 }
                 return this.clazz = clazz;
             };
-        
+
             /**
              * Encodes a runtime message's contents to the specified buffer.
              * @param {ProtoBuf.Builder.Message} message Runtime message to encode
@@ -22280,7 +22280,7 @@ Response.prototype.clone = function() {
                 }
                 return buffer;
             };
-        
+
             /**
              * Decodes an encoded message and returns the decoded message.
              * @param {ByteBuffer} buffer ByteBuffer to decode from
@@ -22336,13 +22336,13 @@ Response.prototype.clone = function() {
                 }
                 return msg;
             };
-        
+
             /**
              * @alias ProtoBuf.Reflect.Message
              * @expose
              */
             Reflect.Message = Message;
-        
+
             /**
              * Constructs a new Message Field.
              * @exports ProtoBuf.Reflect.Message.Field
@@ -22357,42 +22357,42 @@ Response.prototype.clone = function() {
              */
             var Field = function(message, rule, type, name, id, options) {
                 T.call(this, message, name);
-        
+
                 /**
                  * Message field required flag.
                  * @type {boolean}
                  * @expose
                  */
                 this.required = rule == "required";
-        
+
                 /**
                  * Message field repeated flag.
                  * @type {boolean}
                  * @expose
                  */
                 this.repeated = rule == "repeated";
-        
+
                 /**
                  * Message field type. Type reference string if unresolved, protobuf type if resolved.
                  * @type {string|{name: string, wireType: number}
                  * @expose
                  */
                 this.type = type;
-        
+
                 /**
                  * Resolved type reference inside the global namespace.
                  * @type {ProtoBuf.Reflect.T|null}
                  * @expose
                  */
                 this.resolvedType = null;
-        
+
                 /**
                  * Unique message field id.
                  * @type {number}
                  * @expose
                  */
                 this.id = id;
-        
+
                 /**
                  * Message field options.
                  * @type {!Object.<string,*>}
@@ -22400,14 +22400,14 @@ Response.prototype.clone = function() {
                  * @expose
                  */
                 this.options = options || {};
-        
+
                 /**
                  * Original field name.
                  * @type {string}
                  * @expose
                  */
                 this.originalName = this.name; // Used to revert camelcase transformation on naming collisions
-                
+
                 // Convert field names to camel case notation if the override is set
                 if (ProtoBuf.convertFieldsToCamelCase) {
                     this.name = this.name.replace(/_([a-zA-Z])/g, function($0, $1) {
@@ -22415,10 +22415,10 @@ Response.prototype.clone = function() {
                     });
                 }
             };
-        
+
             // Extends T
             Field.prototype = Object.create(T.prototype);
-        
+
             /**
              * Checks if the given value can be set for this field.
              * @param {*} value Value to check
@@ -22520,7 +22520,7 @@ Response.prototype.clone = function() {
                 // We should never end here
                 throw(new Error("[INTERNAL] Illegal value for "+this.toString(true)+": "+value+" (undefined type "+this.type+")"));
             };
-        
+
             /**
              * Encodes the specified field value to the specified buffer.
              * @param {*} value Field value
@@ -22541,7 +22541,7 @@ Response.prototype.clone = function() {
                         if (this.options["packed"]) {
                             // "All of the elements of the field are packed into a single key-value pair with wire type 2
                             // (length-delimited). Each element is encoded the same way it would be normally, except without a
-                            // tag preceding it." 
+                            // tag preceding it."
                             buffer.writeVarint32((this.id << 3) | ProtoBuf.WIRE_TYPES.LDELIM);
                             buffer.ensureCapacity(buffer.offset += 1); // We do not know the length yet, so let's assume a varint of length 1
                             var start = buffer.offset; // Remember where the contents begin
@@ -22574,7 +22574,7 @@ Response.prototype.clone = function() {
                 }
                 return buffer;
             };
-        
+
             /**
              * Encodes a value to the specified buffer. Does not encode the key.
              * @param {*} value Field value
@@ -22586,60 +22586,60 @@ Response.prototype.clone = function() {
             Field.prototype.encodeValue = function(value, buffer) {
                 if (value === null) return; // Nothing to encode
                 // Tag has already been written
-        
+
                 // 32bit varint as-is
                 if (this.type == ProtoBuf.TYPES["int32"] || this.type == ProtoBuf.TYPES["uint32"]) {
                     buffer.writeVarint32(value);
-                    
+
                 // 32bit varint zig-zag
                 } else if (this.type == ProtoBuf.TYPES["sint32"]) {
                     buffer.writeZigZagVarint32(value);
-                    
+
                 // Fixed unsigned 32bit
                 } else if (this.type == ProtoBuf.TYPES["fixed32"]) {
                     buffer.writeUint32(value);
-                    
+
                 // Fixed signed 32bit
                 } else if (this.type == ProtoBuf.TYPES["sfixed32"]) {
                     buffer.writeInt32(value);
-                
+
                 // 64bit varint as-is
                 } else if (this.type == ProtoBuf.TYPES["int64"] || this.type == ProtoBuf.TYPES["uint64"]) {
                     buffer.writeVarint64(value); // throws
-                    
+
                 // 64bit varint zig-zag
                 } else if (this.type == ProtoBuf.TYPES["sint64"]) {
                     buffer.writeZigZagVarint64(value); // throws
-                    
+
                 // Fixed unsigned 64bit
                 } else if (this.type == ProtoBuf.TYPES["fixed64"]) {
                     buffer.writeUint64(value); // throws
-                    
+
                 // Fixed signed 64bit
                 } else if (this.type == ProtoBuf.TYPES["sfixed64"]) {
                     buffer.writeInt64(value); // throws
-                    
+
                 // Bool
                 } else if (this.type == ProtoBuf.TYPES["bool"]) {
                     if (typeof value === 'string') buffer.writeVarint32(value.toLowerCase() === 'false' ? 0 : !!value);
                     else buffer.writeVarint32(value ? 1 : 0);
-                    
+
                 // Constant enum value
                 } else if (this.type == ProtoBuf.TYPES["enum"]) {
                     buffer.writeVarint32(value);
-                    
+
                 // 32bit float
                 } else if (this.type == ProtoBuf.TYPES["float"]) {
                     buffer.writeFloat32(value);
-                    
+
                 // 64bit float
                 } else if (this.type == ProtoBuf.TYPES["double"]) {
                     buffer.writeFloat64(value);
-                    
+
                 // Length-delimited string
                 } else if (this.type == ProtoBuf.TYPES["string"]) {
                     buffer.writeVString(value);
-                    
+
                 // Length-delimited bytes
                 } else if (this.type == ProtoBuf.TYPES["bytes"]) {
                     if (value.offset > value.length) { // Forgot to flip?
@@ -22647,7 +22647,7 @@ Response.prototype.clone = function() {
                     }
                     buffer.writeVarint32(value.remaining());
                     buffer.append(value);
-                    
+
                 // Embedded message
                 } else if (this.type == ProtoBuf.TYPES["message"]) {
                     var bb = new ByteBuffer().LE();
@@ -22660,7 +22660,7 @@ Response.prototype.clone = function() {
                 }
                 return buffer;
             };
-        
+
             /**
              * Decode the field value from the specified buffer.
              * @param {number} wireType Leading wire type
@@ -22686,68 +22686,68 @@ Response.prototype.clone = function() {
                         return values;
                     }
                     // Read the next value otherwise...
-                    
+
                 }
                 // 32bit signed varint
                 if (this.type == ProtoBuf.TYPES["int32"]) {
                     return buffer.readVarint32() | 0;
                 }
-                
+
                 // 32bit unsigned varint
                 if (this.type == ProtoBuf.TYPES["uint32"]) {
                     return buffer.readVarint32() >>> 0;
                 }
-                
+
                 // 32bit signed varint zig-zag
                 if (this.type == ProtoBuf.TYPES["sint32"]) {
                     return buffer.readZigZagVarint32() | 0;
                 }
-                
+
                 // Fixed 32bit unsigned
                 if (this.type == ProtoBuf.TYPES["fixed32"]) {
                     return buffer.readUint32() >>> 0;
                 }
-                
+
                 // Fixed 32bit signed
                 if (this.type == ProtoBuf.TYPES["sfixed32"]) {
                     return buffer.readInt32() | 0;
                 }
-                
+
                 // 64bit signed varint
                 if (this.type == ProtoBuf.TYPES["int64"]) {
                     return buffer.readVarint64();
                 }
-                
+
                 // 64bit unsigned varint
                 if (this.type == ProtoBuf.TYPES["uint64"]) {
                     return buffer.readVarint64().toUnsigned();
                 }
-                
+
                 // 64bit signed varint zig-zag
                 if (this.type == ProtoBuf.TYPES["sint64"]) {
                     return buffer.readZigZagVarint64();
                 }
-        
+
                 // Fixed 64bit unsigned
                 if (this.type == ProtoBuf.TYPES["fixed64"]) {
                     return buffer.readUint64();
                 }
-                
+
                 // Fixed 64bit signed
                 if (this.type == ProtoBuf.TYPES["sfixed64"]) {
                     return buffer.readInt64();
                 }
-                
+
                 // Bool varint
                 if (this.type == ProtoBuf.TYPES["bool"]) {
                     return !!buffer.readVarint32();
                 }
-                
+
                 // Constant enum value varint)
                 if (this.type == ProtoBuf.TYPES["enum"]) {
                     return buffer.readVarint32(); // The following Builder.Message#set will already throw
                 }
-                
+
                 // 32bit float
                 if (this.type == ProtoBuf.TYPES["float"]) {
                     return buffer.readFloat();
@@ -22756,12 +22756,12 @@ Response.prototype.clone = function() {
                 if (this.type == ProtoBuf.TYPES["double"]) {
                     return buffer.readDouble();
                 }
-                
+
                 // Length-delimited string
                 if (this.type == ProtoBuf.TYPES["string"]){
                     return buffer.readVString();
                 }
-                
+
                 // Length-delimited bytes
                 if (this.type == ProtoBuf.TYPES["bytes"]) {
                     nBytes = buffer.readVarint32();
@@ -22773,23 +22773,23 @@ Response.prototype.clone = function() {
                     buffer.offset += nBytes;
                     return value;
                 }
-                
+
                 // Length-delimited embedded message
                 if (this.type == ProtoBuf.TYPES["message"]) {
                     nBytes = buffer.readVarint32();
                     return this.resolvedType.decode(buffer, nBytes);
                 }
-                
+
                 // We should never end here
                 throw(new Error("[INTERNAL] Illegal wire type for "+this.toString(true)+": "+wireType));
             };
-        
+
             /**
              * @alias ProtoBuf.Reflect.Message.Field
              * @expose
              */
             Reflect.Message.Field = Field;
-        
+
             /**
              * Constructs a new Enum.
              * @exports ProtoBuf.Reflect.Enum
@@ -22801,7 +22801,7 @@ Response.prototype.clone = function() {
              */
             var Enum = function(parent, name, options) {
                 Namespace.call(this, parent, name, options);
-        
+
                 /**
                  * Runtime enum object.
                  * @type {Object.<string,number>|null}
@@ -22809,10 +22809,10 @@ Response.prototype.clone = function() {
                  */
                 this.object = null;
             };
-        
+
             // Extends Namespace
             Enum.prototype = Object.create(Namespace.prototype);
-        
+
             /**
              * Builds this enum and returns the runtime counterpart.
              * @return {Object<string,*>}
@@ -22834,13 +22834,13 @@ Response.prototype.clone = function() {
                 }
                 return this.object = enm;
             };
-        
+
             /**
              * @alias ProtoBuf.Reflect.Enum
              * @expose
              */
             Reflect.Enum = Enum;
-        
+
             /**
              * Constructs a new Enum Value.
              * @exports ProtoBuf.Reflect.Enum.Value
@@ -22852,7 +22852,7 @@ Response.prototype.clone = function() {
              */
             var Value = function(enm, name, id) {
                 T.call(this, enm, name);
-        
+
                 /**
                  * Unique enum value id.
                  * @type {number}
@@ -22860,16 +22860,16 @@ Response.prototype.clone = function() {
                  */
                 this.id = id;
             };
-        
+
             // Extends T
             Value.prototype = Object.create(T.prototype);
-        
+
             /**
              * @alias ProtoBuf.Reflect.Enum.Value
              * @expose
              */
             Reflect.Enum.Value = Value;
-        
+
             /**
              * Constructs a new Service.
              * @exports ProtoBuf.Reflect.Service
@@ -22881,17 +22881,17 @@ Response.prototype.clone = function() {
              */
             var Service = function(root, name, options) {
                 Namespace.call(this, root, name, options);
-        
+
                 /**
                  * Built runtime service class.
                  * @type {?function(new:ProtoBuf.Builder.Service)}
                  */
                 this.clazz = null;
             };
-            
+
             // Extends Namespace
             Service.prototype = Object.create(Namespace.prototype);
-        
+
             /**
              * Builds the service and returns the runtime counterpart, which is a fully functional class.
              * @see ProtoBuf.Builder.Service
@@ -22903,7 +22903,7 @@ Response.prototype.clone = function() {
             Service.prototype.build = function(rebuild) {
                 if (this.clazz && !rebuild) return this.clazz;
                 return this.clazz = (function(ProtoBuf, T) {
-        
+
                     /**
                      * Constructs a new runtime Service.
                      * @name ProtoBuf.Builder.Service
@@ -22914,7 +22914,7 @@ Response.prototype.clone = function() {
                      */
                     var Service = function(rpcImpl) {
                         ProtoBuf.Builder.Service.call(this);
-        
+
                         /**
                          * Service implementation.
                          * @name ProtoBuf.Builder.Service#rpcImpl
@@ -22928,10 +22928,10 @@ Response.prototype.clone = function() {
                             setTimeout(callback.bind(this, new Error("Not implemented, see: https://github.com/dcodeIO/ProtoBuf.js/wiki/Services")), 0); // Must be async!
                         };
                     };
-                    
+
                     // Extends ProtoBuf.Builder.Service
                     Service.prototype = Object.create(ProtoBuf.Builder.Service.prototype);
-                    
+
                     if (Object.defineProperty) {
                         Object.defineProperty(Service, "$options", {
                             "value": T.buildOpt(),
@@ -22946,7 +22946,7 @@ Response.prototype.clone = function() {
                             "writable": false
                         });
                     }
-        
+
                     /**
                      * Asynchronously performs an RPC call using the given RPC implementation.
                      * @name ProtoBuf.Builder.Service.[Method]
@@ -22957,7 +22957,7 @@ Response.prototype.clone = function() {
                      *  the error if any and the response either as a pre-parsed message or as its raw bytes
                      * @abstract
                      */
-        
+
                     /**
                      * Asynchronously performs an RPC call using the instance's RPC implementation.
                      * @name ProtoBuf.Builder.Service#[Method]
@@ -22967,11 +22967,11 @@ Response.prototype.clone = function() {
                      *  the error if any and the response either as a pre-parsed message or as its raw bytes
                      * @abstract
                      */
-                    
+
                     var rpc = T.getChildren(Reflect.Service.RPCMethod);
                     for (var i=0; i<rpc.length; i++) {
                         (function(method) {
-                            
+
                             // service#Method(message, callback)
                             Service.prototype[method.name] = function(req, callback) {
                                 try {
@@ -22994,12 +22994,12 @@ Response.prototype.clone = function() {
                                     setTimeout(callback.bind(this, err), 0);
                                 }
                             };
-        
+
                             // Service.Method(rpcImpl, message, callback)
                             Service[method.name] = function(rpcImpl, req, callback) {
                                 new Service(rpcImpl)[method.name](req, callback);
                             };
-        
+
                             if (Object.defineProperty) {
                                 Object.defineProperty(Service[method.name], "$options", {
                                     "value": method.buildOpt(),
@@ -23016,14 +23016,14 @@ Response.prototype.clone = function() {
                             }
                         })(rpc[i]);
                     }
-                    
+
                     return Service;
-                    
+
                 })(ProtoBuf, this);
             };
-            
+
             Reflect.Service = Service;
-        
+
             /**
              * Abstract service method.
              * @exports ProtoBuf.Reflect.Service.Method
@@ -23035,7 +23035,7 @@ Response.prototype.clone = function() {
              */
             var Method = function(svc, name, options) {
                 T.call(this, svc, name);
-        
+
                 /**
                  * Options.
                  * @type {Object.<string, *>}
@@ -23043,10 +23043,10 @@ Response.prototype.clone = function() {
                  */
                 this.options = options || {};
             };
-            
+
             // Extends T
             Method.prototype = Object.create(T.prototype);
-        
+
             /**
              * Builds the method's '$options' property.
              * @name ProtoBuf.Reflect.Service.Method#buildOpt
@@ -23054,13 +23054,13 @@ Response.prototype.clone = function() {
              * @return {Object.<string,*>}
              */
             Method.prototype.buildOpt = Namespace.prototype.buildOpt;
-        
+
             /**
              * @alias ProtoBuf.Reflect.Service.Method
              * @expose
              */
             Reflect.Service.Method = Method;
-        
+
             /**
              * RPC service method.
              * @exports ProtoBuf.Reflect.Service.RPCMethod
@@ -23074,28 +23074,28 @@ Response.prototype.clone = function() {
              */
             var RPCMethod = function(svc, name, request, response, options) {
                 Method.call(this, svc, name, options);
-        
+
                 /**
                  * Request message name.
                  * @type {string}
                  * @expose
                  */
                 this.requestName = request;
-        
+
                 /**
                  * Response message name.
                  * @type {string}
                  * @expose
                  */
                 this.responseName = response;
-        
+
                 /**
                  * Resolved request message type.
                  * @type {ProtoBuf.Reflect.Message}
                  * @expose
                  */
                 this.resolvedRequestType = null;
-        
+
                 /**
                  * Resolved response message type.
                  * @type {ProtoBuf.Reflect.Message}
@@ -23103,26 +23103,26 @@ Response.prototype.clone = function() {
                  */
                 this.resolvedResponseType = null;
             };
-            
+
             // Extends Method
             RPCMethod.prototype = Object.create(Method.prototype);
-        
+
             /**
              * @alias ProtoBuf.Reflect.Service.RPCMethod
              * @expose
              */
             Reflect.Service.RPCMethod = RPCMethod;
-            
+
             return Reflect;
         })(ProtoBuf);
-                
+
         /**
          * @alias ProtoBuf.Builder
          * @expose
          */
         ProtoBuf.Builder = (function(ProtoBuf, Lang, Reflect) {
             "use strict";
-            
+
             /**
              * Constructs a new Builder.
              * @exports ProtoBuf.Builder
@@ -23130,42 +23130,42 @@ Response.prototype.clone = function() {
              * @constructor
              */
             var Builder = function() {
-        
+
                 /**
                  * Namespace.
                  * @type {ProtoBuf.Reflect.Namespace}
                  * @expose
                  */
                 this.ns = new Reflect.Namespace(null, ""); // Global namespace
-        
+
                 /**
                  * Namespace pointer.
                  * @type {ProtoBuf.Reflect.T}
                  * @expose
                  */
                 this.ptr = this.ns;
-        
+
                 /**
                  * Resolved flag.
                  * @type {boolean}
                  * @expose
                  */
                 this.resolved = false;
-        
+
                 /**
                  * The current building result.
                  * @type {Object.<string,ProtoBuf.Builder.Message|Object>|null}
                  * @expose
                  */
                 this.result = null;
-        
+
                 /**
                  * Imported files.
                  * @type {Array.<string>}
                  * @expose
                  */
                 this.files = {};
-        
+
                 /**
                  * Import root override.
                  * @type {?string}
@@ -23173,7 +23173,7 @@ Response.prototype.clone = function() {
                  */
                 this.importRoot = null;
             };
-        
+
             /**
              * Resets the pointer to the global namespace.
              * @expose
@@ -23181,7 +23181,7 @@ Response.prototype.clone = function() {
             Builder.prototype.reset = function() {
                 this.ptr = this.ns;
             };
-        
+
             /**
              * Defines a package on top of the current pointer position and places the pointer on it.
              * @param {string} pkg
@@ -23208,7 +23208,7 @@ Response.prototype.clone = function() {
                 }
                 return this;
             };
-        
+
             /**
              * Tests if a definition is a valid message definition.
              * @param {Object.<string,*>} def Definition
@@ -23270,7 +23270,7 @@ Response.prototype.clone = function() {
                 }
                 return true;
             };
-        
+
             /**
              * Tests if a definition is a valid message field definition.
              * @param {Object} def Definition
@@ -23300,7 +23300,7 @@ Response.prototype.clone = function() {
                 }
                 return true;
             };
-        
+
             /**
              * Tests if a definition is a valid enum definition.
              * @param {Object} def Definition
@@ -23332,7 +23332,7 @@ Response.prototype.clone = function() {
                 // It's not important if there are other fields because ["values"] is already unique
                 return true;
             };
-        
+
             /**
              * Creates ths specified protocol types at the current pointer position.
              * @param {Array.<Object.<string,*>>} defs Messages, enums or services to create
@@ -23346,7 +23346,7 @@ Response.prototype.clone = function() {
                     defs = [defs];
                 }
                 if (defs.length == 0) return;
-                
+
                 // It's quite hard to keep track of scopes and memory here, so let's do this iteratively.
                 var stack = [], def, obj, subObj, i, j;
                 stack.push(defs); // One level [a, b, c]
@@ -23463,7 +23463,7 @@ Response.prototype.clone = function() {
                 this.result = null; // Require re-build
                 return this;
             };
-        
+
             /**
              * Tests if the specified file is a valid import.
              * @param {string} filename
@@ -23475,7 +23475,7 @@ Response.prototype.clone = function() {
                 // bootstrapping directives that are not required and therefore cannot be parsed by ProtoBuf.js.
                 return !(/google\/protobuf\//.test(filename));
             };
-        
+
             /**
              * Imports another definition into this builder.
              * @param {Object.<string,*>} json Parsed import
@@ -23519,7 +23519,7 @@ Response.prototype.clone = function() {
                     } else {
                         importRoot = null;
                     }
-        
+
                     for (var i=0; i<json['imports'].length; i++) {
                         if (typeof json['imports'][i] === 'string') { // Import file
                             if (!importRoot) {
@@ -23575,7 +23575,7 @@ Response.prototype.clone = function() {
                 }
                 return this;
             };
-        
+
             /**
              * Tests if a definition is a valid service definition.
              * @param {Object} def Definition
@@ -23589,7 +23589,7 @@ Response.prototype.clone = function() {
                 }
                 return true;
             };
-        
+
             /**
              * Tests if a definition is a valid extension.
              * @param {Object} def Definition
@@ -23620,7 +23620,7 @@ Response.prototype.clone = function() {
                 }
                 return true;
             };
-        
+
             /**
              * Resolves all namespace objects.
              * @throws {Error} If a type cannot be resolved
@@ -23680,7 +23680,7 @@ Response.prototype.clone = function() {
                 }
                 this.reset();
             };
-        
+
             /**
              * Builds the protocol. This will first try to resolve all definitions and, if this has been successful,
              * return the built package.
@@ -23715,7 +23715,7 @@ Response.prototype.clone = function() {
                     return ptr;
                 }
             };
-        
+
             /**
              * Similar to {@link ProtoBuf.Builder#build}, but looks up the internal reflection descriptor.
              * @param {string=} path Specifies what to return. If omitted, the entire namespace wiil be returned.
@@ -23724,7 +23724,7 @@ Response.prototype.clone = function() {
             Builder.prototype.lookup = function(path) {
                 return path ? this.ns.resolve(path) : this.ns;
             };
-        
+
             /**
              * Returns a string representation of this object.
              * @return {string} String representation as of "Builder"
@@ -23733,17 +23733,17 @@ Response.prototype.clone = function() {
             Builder.prototype.toString = function() {
                 return "Builder";
             };
-        
+
             // Pseudo types documented in Reflect.js.
             // Exist for the sole purpose of being able to "... instanceof ProtoBuf.Builder.Message" etc.
             Builder.Message = function() {};
             Builder.Service = function() {};
-            
+
             return Builder;
-            
+
         })(ProtoBuf, ProtoBuf.Lang, ProtoBuf.Reflect);
-        
-        
+
+
         /**
          * Loads a .proto string and returns the Builder.
          * @param {string} proto .proto file contents
@@ -44065,7 +44065,7 @@ var IncomingMessage = exports.IncomingMessage = function (xhr, response, mode) {
 		self.url = response.url
 		self.statusCode = response.status
 		self.statusMessage = response.statusText
-		
+
 		response.headers.forEach(function(header, key){
 			self.headers[key.toLowerCase()] = header
 			self.rawHeaders.push(key, header)
@@ -44153,7 +44153,7 @@ IncomingMessage.prototype._onXHRProgress = function () {
 				self.push(new Buffer(response))
 				break
 			}
-			// Falls through in IE8	
+			// Falls through in IE8
 		case 'text':
 			try { // This will fail when readyState = 3 in IE9. Switch mode and wait for readyState = 4
 				response = xhr.responseText
