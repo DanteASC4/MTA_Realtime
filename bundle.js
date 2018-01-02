@@ -8815,7 +8815,7 @@ var utils = require('./utils');
 /**
  * Mta constructor
  * @param {Object} options
- */
+ *
 var Mta = module.exports = function (options) {
 
   this.urls = {
@@ -14437,7 +14437,13 @@ module.exports = {
                     }
             } else {
                 var xhr = Util.XHR();
-                xhr.open('GET', path);
+								xhr.onreadystatechange = function() {
+									if (this.readyState === this.DONE) {
+									  console.log(this.status) // do something; the request has completed
+										}
+									}
+                xhr.open('GET', path, callback ? true : false);
+								xhr.send()
                 // xhr.setRequestHeader('User-Agent', 'XMLHTTP/1.0');
                 xhr.setRequestHeader('Accept', 'text/plain');
                 if (typeof xhr.overrideMimeType === 'function') xhr.overrideMimeType('text/plain');
