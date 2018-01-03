@@ -14443,8 +14443,8 @@ module.exports = {
                 if (typeof xhr.overrideMimeType === 'function') xhr.overrideMimeType('text/plain');
                 if (callback) {
                     xhr.onreadystatechange = function() {
-                        if (this.readyState != 4) return;
-                        if (/* remote */ this.status == 200 || /* local */ (this.status == 0 && typeof this.responseText === 'string'))
+                        if (xhr.readyState != 4) return;
+                        if (/* remote */ xhr.status == 200 || /* local */ (xhr.status == 0 && typeof xhr.responseText === 'string'))
                             callback(xhr.responseText);
                         else
                             callback(null);
