@@ -14437,20 +14437,14 @@ module.exports = {
                     }
             } else {
                 var xhr = Util.XHR();
-								xhr.onreadystatechange = function() {
-									if (this.readyState === this.DONE) {
-									  console.log(this.status) // do something; the request has completed
-										}
-									}
                 xhr.open('GET', path, callback ? true : false);
-								xhr.send()
                 // xhr.setRequestHeader('User-Agent', 'XMLHTTP/1.0');
                 xhr.setRequestHeader('Accept', 'text/plain');
                 if (typeof xhr.overrideMimeType === 'function') xhr.overrideMimeType('text/plain');
                 if (callback) {
                     xhr.onreadystatechange = function() {
-                        if (xhr.readyState != 4) return;
-                        if (/* remote */ xhr.status == 200 || /* local */ (xhr.status == 0 && typeof xhr.responseText === 'string'))
+                        if (this.readyState != 4) return;
+                        if (/* remote */ this.status == 200 || /* local */ (this.status == 0 && typeof this.responseText === 'string'))
                             callback(xhr.responseText);
                         else
                             callback(null);
