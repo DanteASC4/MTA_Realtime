@@ -11,4 +11,5 @@ in the main function
 ## TODO
 - [ ] Put on a server
 - [ ] Integrate with front-end
+
 *Authors: Alex Anthony Cortes-Ose, Dante Rivera, Thomas Smolka, NYC iSchool Coding Club*
