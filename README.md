@@ -1,19 +1,13 @@
-# Dec. 27, 2017
-## Now Using browserify
-I used browserify instead of require.js to bring node repositories and code into html
-the way it works is with a command like:
+# MTA Realtime - Now using python!
+Grabs, formats, and returns MTA times as a JSON server
+Being used at the NYC iSchool to display arrival information of nearby trains in the main lobby
 ```
-> browserify index.js -o bundle.js
+> pip3 install gtfs-realtime-bindings, urllib3
+> python3 app.py
 ```
-                 ^^^ the node file
-
-then, in the html I include it like
-```html
-<script type="text/javascript" src="bundle.js"></script>
-```
-and it works with all stuff in node modules
-
+Returns an array of train arrival times for any station passed
+in the main function
 ## TODO
-- [ ] Fix the stupid CORS issue
-- [ ] Finalize frontend layout
-- [ ] Raspberry Pi/TV setup
+- [ ] Put on a server
+- [ ] Integrate with front-end
+*Authors: Alex Anthony Cortes-Ose, Dante Rivera, Thomas Smolka, NYC iSchool Coding Club*
