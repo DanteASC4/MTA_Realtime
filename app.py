@@ -30,27 +30,22 @@ def fetch_data(feed_id, station_id, station_name, direction):
 def main():
 	nexttime = time.time()
 	while True:
+		print("server running, yo")
 		###################################
 		### SPRING ST (E, C, ~A) ##########
 		###################################
-		print("\n#######################################################\n")
-		print(fetch_data(26, "A33N", "Spring St", "UPTOWN"))
-		print("\n#######################################################\n")
-		print(fetch_data(26, "A33S", "Spring St", "DOWNTOWN"))
+		return fetch_data(26, "A33N", "Spring St", "UPTOWN")
+		return fetch_data(26, "A33S", "Spring St", "DOWNTOWN")
 		###################################
 		### HOUSON ST (1, ~2, ~3) #########
 		###################################
-		print("\n#######################################################\n")
-		print(fetch_data(1,  "134N", "Houston St", "UPTOWN"))
-		print("\n#######################################################\n")
-		print(fetch_data(1,  "134S", "Houston St", "DOWNTOWN"))
+		return fetch_data(1,  "134N", "Houston St", "UPTOWN")
+		return fetch_data(1,  "134S", "Houston St", "DOWNTOWN")
 		###################################
 		### CANAL ST (1, 2, 3, A, C, E) ###
 		###################################
-		print("\n#######################################################\n")
-		print(fetch_data(1,  "135N", "Canal St", "UPTOWN"))
-		print("\n#######################################################\n")
-		print(fetch_data(1,  "135S", "Canal St", "DOWNTOWN"))
+		return fetch_data(1,  "135N", "Canal St", "UPTOWN")
+		return fetch_data(1,  "135S", "Canal St", "DOWNTOWN")
 		#fetch data every 60 seconds
 		nexttime += 60
 		sleeptime = nexttime - time.time()
