@@ -1,7 +1,8 @@
 #import dependencies
-import time, datetime, os, socket, json
+import time, datetime, json
 from google.transit import gtfs_realtime_pb2
 from urllib.request import urlopen
+from flask import Flask, jsonify
 #epoch time to mintues
 def epoch_to_time(epoch):
 	return str(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(epoch)))
@@ -18,38 +19,27 @@ def fetch_data(feed_id, station_id, station_name, direction):
 				current = str(datetime.datetime.now())[11:19]; FMT = '%H:%M:%S';
 				arrival = epoch_to_time(stop_time_update[j].arrival.time)[11:19]
 				tdelta = datetime.datetime.strptime(arrival, FMT) - datetime.datetime.strptime(current, FMT)
-				times.append(json.dumps({
+				times.append({
 					"station": station_name,
 					"direction": direction,
 					"Route": feed.entity[i].trip_update.trip.route_id,
 					"arrival_time": arrival,
 					"delta": str(tdelta)
-				}))
+				})
 	return times
-#putting everything together
+#serve over http
+app = Flask(__name__)
+@app.route('/')
 def main():
 	nexttime = time.time()
-	while True:
-		print("server running, yo")
-		###################################
-		### SPRING ST (E, C, ~A) ##########
-		###################################
-		return fetch_data(26, "A33N", "Spring St", "UPTOWN")
-		return fetch_data(26, "A33S", "Spring St", "DOWNTOWN")
-		###################################
-		### HOUSON ST (1, ~2, ~3) #########
-		###################################
-		return fetch_data(1,  "134N", "Houston St", "UPTOWN")
-		return fetch_data(1,  "134S", "Houston St", "DOWNTOWN")
-		###################################
-		### CANAL ST (1, 2, 3, A, C, E) ###
-		###################################
-		return fetch_data(1,  "135N", "Canal St", "UPTOWN")
-		return fetch_data(1,  "135S", "Canal St", "DOWNTOWN")
-		#fetch data every 60 seconds
-		nexttime += 60
-		sleeptime = nexttime - time.time()
-		if sleeptime > 0:
-			time.sleep(sleeptime)
+	return jsonify({
+		"uptown_spring": fetch_data(26, "A33N", "Spring St", "UPTOWN"),
+		"downtown_spring": fetch_data(26, "A33S", "Spring St", "DOWNTOWN"),
+		"uptown_houston": fetch_data(1,  "134N", "Houston St", "UPTOWN"),
+		"downtown_houston": fetch_data(1,  "134S", "Houston St", "DOWNTOWN"),
+		"uptown_canal": fetch_data(1,  "135N", "Canal St", "UPTOWN"),
+		"downtown_canal": fetch_data(1,  "135S", "Canal St", "DOWNTOWN")
+	})
 #run script
-main()
+if __name__ == '__main__':
+	app.run(debug=True)
