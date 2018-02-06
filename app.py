@@ -31,8 +31,7 @@ def fetch_data(feed_id, station_id, station_name, direction):
 app = Flask(__name__)
 @app.route('/')
 def main():
-	nexttime = time.time()
-	return jsonify({
+	response = jsonify({
 		"uptown_spring": fetch_data(26, "A33N", "Spring St", "UPTOWN"),
 		"downtown_spring": fetch_data(26, "A33S", "Spring St", "DOWNTOWN"),
 		"uptown_houston": fetch_data(1,  "134N", "Houston St", "UPTOWN"),
@@ -40,6 +39,8 @@ def main():
 		"uptown_canal": fetch_data(1,  "135N", "Canal St", "UPTOWN"),
 		"downtown_canal": fetch_data(1,  "135S", "Canal St", "DOWNTOWN")
 	})
+	response.headers.add('Access-Control-Allow-Origin', '*')
+	return response
 #run script
 if __name__ == '__main__':
 	app.run(debug=True)
