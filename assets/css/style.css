@@ -1,0 +1,74 @@
+body {
+	font-family: Arial;
+}
+#top-info {
+	display: flex;
+	flex-direction: row;
+}
+#time {
+	flex: 1;
+	text-align: center;
+	font-size: 40px;
+	font-weight: bold;
+	margin-top: -2px;
+}
+#date {
+	flex: 1;
+	text-align: center;
+	font-size: 40px;
+	font-weight: bold;
+	margin-top: -2px;
+}
+#main {
+	display: flex;
+	flex-direction: row;
+}
+.station {
+	flex: 3;
+	border: 1px solid black;
+}
+.station h1 {
+	text-align: center;
+	font-size: 50px;
+}
+.schedule {
+	list-style-type: none;
+}
+.update {
+	margin-left: -30px;
+}
+.update div h3 {
+	display: inline;
+	margin-left: 10px;
+	font-size: 27px;
+}
+.update .delay {
+	display: inline;
+	color: orange;
+	font-size: 25px;
+	border-radius: 50%;
+	background-color: orange;
+	margin-left: 20px;
+}
+.update .delay {
+	display: inline;
+	color: orange;
+	font-size: 25px;
+	border-radius: 50%;
+	background-color: orange;
+	margin-left: 20px;
+}
+.update .good {
+	display: inline;
+	color: green;
+	font-size: 25px;
+	border-radius: 50%;
+	background-color: green;
+	margin-left: 20px;
+}
+.train-logo {
+	height: 50px;
+	display: inline;
+	vertical-align: middle;
+	margin-bottom: 13px;
+}
